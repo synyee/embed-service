@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+# Allow requests from any origin (mobile app)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -12,6 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Load the MiniLM model
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 class EmbedRequest(BaseModel):
@@ -21,3 +23,5 @@ class EmbedRequest(BaseModel):
 def embed(req: EmbedRequest):
     embedding = model.encode(req.text).tolist()
     return {"embedding": embedding}
+
+# Do NOT include uvicorn.run() — Railway runs the container automatically
